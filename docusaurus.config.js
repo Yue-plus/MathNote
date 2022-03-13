@@ -37,18 +37,10 @@ const config = {
         title: 'MathNote',
         logo: {alt: 'My Site Logo', src: 'img/logo.svg'},
         items: [
-          {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'Tutorial',
-          },
-          {to: '/blog', label: 'Blog', position: 'left'},
-          {
-            href: 'https://github.com/facebook/docusaurus',
-            label: 'GitHub',
-            position: 'right',
-          },
+          {type: 'doc', docId: 'start', position: 'left', label: '开始项目'},
+          // {to: '/blog', label: 'Blog', position: 'left'},
+          {href: 'https://www.geogebra.org/', label: 'GeoGebra - 数学教学软件', position: 'right'},
+          {href: 'https://github.com/Yue-plus/MathNote', label: 'GitHub', position: 'right'},
         ],
       },
       footer: {
@@ -57,7 +49,7 @@ const config = {
           {
             title: '笔记',
             items: [
-              {label: 'Tutorial', to: 'https://note.yueplus.ink/'},
+              {label: 'NetNote', to: 'https://note.yueplus.ink/'},
             ],
           },
         ],
