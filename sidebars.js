@@ -23,7 +23,16 @@ const sidebars = {
     {type: 'link', label: 'KaTex 语法', href: 'https://katex.org/docs/supported.html'}
   ],
   mathSidebar: [
-    'math/集合/集合及其运算'
+    {
+      type: 'category',
+      label: '集合',
+      items: ['math/集合/集合及其运算']
+    },
+    {
+      type: 'category',
+      label: '函数',
+      items: ['math/函数/函数']
+    }
   ]
 };
 
