@@ -1,0 +1,32 @@
+# 参考：https://docusaurus.io/zh-CN/docs/deployment#deploying-to-github-pages
+name: 部署到 GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: 部署到 GitHub Pages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
+          cache: yarn
+
+      - name: 安装依赖
+        run: yarn install --frozen-lockfile
+      - name: 构建网站
+        run: yarn build
+
+      - name: 部署到 GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_TOKEN }}
+          # Build output to publish to the `gh-pages` branch:
+          publish_dir: ./build
+          user_name: Yue-plus
+          user_email: Yue_plus@foxmail.com
