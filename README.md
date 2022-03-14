@@ -2,6 +2,10 @@
 
 数学笔记
 
+## 开启项目
+
+参考 [开启项目](https://math.note.yue.zone/docs/start)
+
 ## 许可
 
 [![知识共享许可协议](https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png)
