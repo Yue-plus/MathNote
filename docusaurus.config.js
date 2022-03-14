@@ -4,6 +4,9 @@
 const lightCodeTheme = require('prism-react-renderer/themes/github');
 const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
+const math = require('remark-math');
+const katex = require('rehype-katex');
+
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   title: 'MathNote',
@@ -21,13 +24,28 @@ const config = {
       'classic',
       /** @type {import('@docusaurus/preset-classic').Options} */
       ({
-        docs: {sidebarPath: require.resolve('./sidebars.js'), editUrl: 'https://github.com/Yue-plus/MathNote'},
+        docs: {
+          sidebarPath: require.resolve('./sidebars.js'),
+          editUrl: 'https://github.com/Yue-plus/MathNote',
+          remarkPlugins: [math],
+          rehypePlugins: [katex],
+        },
         blog: {showReadingTime: true, editUrl: 'https://github.com/Yue-plus/MathNote'},
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
       }),
     ],
+  ],
+
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
+      type: 'text/css',
+      integrity:
+          'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+      crossorigin: 'anonymous',
+    },
   ],
 
   themeConfig:
@@ -38,6 +56,7 @@ const config = {
         logo: {alt: 'My Site Logo', src: 'img/logo.svg'},
         items: [
           {type: 'doc', docId: 'start', position: 'left', label: '开始项目'},
+          {type: 'doc', docId: 'math/集合/集合及其运算', position: 'left', label: '数学'},
           // {to: '/blog', label: 'Blog', position: 'left'},
           {href: 'https://www.geogebra.org/', label: 'GeoGebra - 数学教学软件', position: 'right'},
           {href: 'https://github.com/Yue-plus/MathNote', label: 'GitHub', position: 'right'},
