@@ -34,6 +34,11 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: '不等式',
+      items: ['math/不等式/不等式的基本性质']
+    },
+    {
+      type: 'category',
       label: '函数',
       items: ['math/函数/函数', 'math/函数/一次函数与二次函数']
     }
