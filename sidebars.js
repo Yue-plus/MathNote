@@ -26,7 +26,7 @@ const sidebars = {
     {
       type: 'category',
       label: '集合',
-      items: ['math/集合/集合及其运算']
+      items: ['math/集合/集合及其运算', 'math/集合/充要条件']
     },
     {
       type: 'category',
