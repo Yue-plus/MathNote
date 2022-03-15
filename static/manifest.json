@@ -1,0 +1,15 @@
+{
+  "name": "MathNote",
+  "short_name": "只要学不死，就往死里学！",
+  "theme_color": "#2196f3",
+  "background_color": "#424242",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./index.html",
+  "related_applications": [
+    {
+      "platform": "webapp",
+      "url": "https://math.note.yue.zone/manifest.json"
+    }
+  ]
+}

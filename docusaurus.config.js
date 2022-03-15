@@ -42,8 +42,7 @@ const config = {
     {
       href: 'https://cdn.jsdelivr.net/npm/katex@0.13.24/dist/katex.min.css',
       type: 'text/css',
-      integrity:
-          'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
+      integrity: 'sha384-odtC+0UGzzFL/6PNoE8rX/SPcQDXBJ+uRepguP4QkPCm2LBxH3FA3y+fKSiJ+AmM',
       crossorigin: 'anonymous',
     },
   ],
@@ -80,6 +79,22 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
+
+  plugins: [
+    ['@docusaurus/plugin-pwa', {
+      debug: true,
+      offlineModeActivationStrategies: [
+        'appInstalled',
+        'standalone',
+        'queryString',
+      ],
+      pwaHead: [
+        {tagName: 'link', rel: 'icon', href: '/img/docusaurus.png'},
+        {tagName: 'link', rel: 'manifest', href: '/manifest.json'},
+        {tagName: 'meta', name: 'theme-color', content: 'rgb(37, 194, 160)',},
+      ]
+    }],
+  ]
 };
 
 module.exports = config;
