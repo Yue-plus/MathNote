@@ -6,10 +6,8 @@
   "display": "standalone",
   "scope": "./",
   "start_url": "./index.html",
-  "related_applications": [
-    {
-      "platform": "webapp",
-      "url": "https://math.note.yue.zone/manifest.json"
-    }
+  "related_applications": [{"platform": "webapp", "url": "https://math.note.yue.zone/manifest.json"}],
+  "icon": [
+    {"src": "img/docusaurus.png", "sizes": "200x200", "type": "image/png"}
   ]
 }
