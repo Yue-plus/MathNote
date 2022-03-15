@@ -26,7 +26,11 @@ const sidebars = {
     {
       type: 'category',
       label: '集合',
-      items: ['math/集合/集合及其运算', 'math/集合/充要条件']
+      items: ['math/集合/集合及其运算', 'math/集合/充要条件', {
+        type: 'link',
+        label: '集合论 - 维基百科',
+        href: 'https://zh.wikipedia.org/wiki/%E9%9B%86%E5%90%88%E8%AE%BA'
+      }]
     },
     {
       type: 'category',
