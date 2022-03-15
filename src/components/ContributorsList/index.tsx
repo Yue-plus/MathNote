@@ -4,7 +4,7 @@ import style from './style.module.css';
 function Contributor(props) {
   return (
     <a className={style.headLink} target="_blank" href={props.href}>
-      <img className={style.headImg} src={props.imgSrc} alt={props.href} />
+      <img className={style.headImg} src={props.imgSrc} alt={props.name} />
       <br/>
       {props.name}
     </a>
