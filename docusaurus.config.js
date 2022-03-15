@@ -57,20 +57,21 @@ const config = {
           {type: 'doc', docId: 'start', position: 'left', label: '开始项目'},
           {type: 'doc', docId: 'math/集合/集合及其运算', position: 'left', label: '数学'},
           // {to: '/blog', label: 'Blog', position: 'left'},
+          {href: 'https://note.yueplus.ink/', label: 'NetNote', position: 'right'},
           {href: 'https://www.geogebra.org/', label: 'GeoGebra - 数学教学软件', position: 'right'},
           {href: 'https://github.com/Yue-plus/MathNote', label: 'GitHub', position: 'right'},
         ],
       },
       footer: {
         style: 'dark',
-        links: [
-          {
-            title: '笔记',
-            items: [
-              {label: 'NetNote', to: 'https://note.yueplus.ink/'},
-            ],
-          },
-        ],
+        // links: [
+        //   {
+        //     title: '笔记',
+        //     items: [
+        //       {label: 'NetNote', to: 'https://note.yueplus.ink/'},
+        //     ],
+        //   },
+        // ],
         // TODO: 域名备案
         copyright: `<a target="_blank" rel="license" href="//creativecommons.org/licenses/by-nc-sa/4.0/deed.zh"><img alt="知识共享许可协议" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a><br />本作品采用<a target="_blank" rel="license" href="//creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议</a>进行许可。`,
       },
