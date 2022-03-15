@@ -1,5 +1,4 @@
 .headLink {
-  color: #2c3e50;
   padding: 10px;
   display: inline-block;
   text-align: center;
@@ -10,6 +9,7 @@
 .headLink:hover{
   color: var(--ifm-font-color-base-inverse);
   background-color: var(--ifm-color-primary);
+  text-decoration: none;
 }
 
 .headImg {
