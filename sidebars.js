@@ -35,7 +35,7 @@ const sidebars = {
     {
       type: 'category',
       label: '不等式',
-      items: ['math/不等式/不等式的基本性质']
+      items: ['math/不等式/不等式的基本性质', 'math/不等式/不等式的解法']
     },
     {
       type: 'category',
