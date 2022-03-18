@@ -45,7 +45,7 @@ const sidebars = {
     {
       type: 'category',
       label: '数列',
-      items: ['math/数列/数列的概念', 'math/等差数列/等差数列的概念']
+      items: ['math/数列/数列的概念', 'math/数列/等差数列']
     }
   ]
 };
