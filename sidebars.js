@@ -41,6 +41,11 @@ const sidebars = {
       type: 'category',
       label: '函数',
       items: ['math/函数/函数', 'math/函数/一次函数与二次函数']
+    },
+    {
+      type: 'category',
+      label: '数列',
+      items: ['math/数列/数列的概念']
     }
   ]
 };

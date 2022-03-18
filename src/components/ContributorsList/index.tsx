@@ -18,6 +18,7 @@ export default function ContributorsList() {
       <div className="row">
         <div>
           <Contributor name="Yue_plus" href="https://github.com/Yue-plus" imgSrc="https://github.com/Yue-plus.png" />
+          <Contributor name="HM-plus" href="https://github.com/HM-plus" imgSrc="https://github.com/HM-plus.png" />
         </div>
       </div>
     </div>
