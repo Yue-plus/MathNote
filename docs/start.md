@@ -41,4 +41,5 @@ yarn start
 ## 参与项目
 
 本项目使用了 [Docusaurus](https://docusaurus.io/zh-CN/) 构建，使用
-[Markdown 语法](https://note.yueplus.ink/start/markdown.html) 编写文档。
+[Markdown](https://note.yueplus.ink/start/markdown.html) 与
+[KaTex](https://katex.org/docs/supported.html) 编写文档。
