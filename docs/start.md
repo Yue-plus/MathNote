@@ -12,6 +12,10 @@ title: 开始项目
 - 在本地 [安装并配置好 Git](https://note.yueplus.ink/start/start.html#%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85-git)
 - 在本地 [安装并配置好 Node.JS](https://note.yueplus.ink/start/start.html#%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85-nodejs)
 - 在本地 [安装并配置好 Yarn](https://note.yueplus.ink/start/start.html#%E6%9C%AC%E5%9C%B0%E5%AE%89%E8%A3%85-yarn)
+- 推荐使用 [Visual Studio Code](https://note.yueplus.ink/start/use_VScode/#%E4%B8%8B%E8%BD%BD%E5%AE%89%E8%A3%85)
+  代码编辑器
+  + 推荐安装 [Better Comments](https://marketplace.visualstudio.com/items?itemName=aaron-bond.better-comments)
+    插件
 
 ## 拉取项目
 
