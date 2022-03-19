@@ -55,7 +55,8 @@ const config = {
         logo: {alt: 'My Site Logo', src: 'img/logo.svg'},
         items: [
           {type: 'doc', docId: 'start', position: 'left', label: '开始项目'},
-          {type: 'doc', docId: 'math/集合/集合及其运算', position: 'left', label: '数学'},
+          {type: 'doc', docId: '初中/反比例函数/反比例函数', position: 'left', label: '初中'},
+          {type: 'doc', docId: '高中/集合/集合及其运算', position: 'left', label: '高中'},
           // {to: '/blog', label: 'Blog', position: 'left'},
           {href: 'https://note.yueplus.ink/', label: 'NetNote', position: 'right'},
           {href: 'https://www.geogebra.org/', label: 'GeoGebra - 数学教学软件', position: 'right'},
