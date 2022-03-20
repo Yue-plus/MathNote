@@ -25,6 +25,11 @@ const sidebars = {
   '初中': [
     {
       type: 'category',
+      label: '14. 整式的乘法与因式分解',
+      items: ['初中/整式的乘法与因式分解/整式的乘法']
+    },
+    {
+      type: 'category',
       label: '21. 一元二次方程',
       items: [
         '初中/一元二次方程/一元二次方程',
