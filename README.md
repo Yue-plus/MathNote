@@ -1,6 +1,6 @@
 # MathNote
 
-数学笔记
+数学笔记：<https://Math.Note.Yue.Zone>
 
 ## 开启项目
 
