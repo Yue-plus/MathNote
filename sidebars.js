@@ -111,6 +111,11 @@ const sidebars = {
       type: 'category',
       label: '6. 数列',
       items: ['高中/数列/数列的概念', '高中/数列/等差数列', '高中/数列/等比数列']
+    },
+    {
+      type: 'category',
+      label: '7. 平面向量',
+      items: ['高中/平面向量/向量的加减运算']
     }
   ]
 };
