@@ -26,7 +26,15 @@ const sidebars = {
     {
       type: 'category',
       label: '14. 整式的乘法与因式分解',
-      items: ['初中/整式的乘法与因式分解/整式的乘法']
+      items: [
+        '初中/整式的乘法与因式分解/整式的乘法',
+        '初中/整式的乘法与因式分解/乘法公式',
+        {
+          type: 'link',
+          label: '杨辉三角_百度百科',
+          href: 'https://baike.baidu.com/item/%E6%9D%A8%E8%BE%89%E4%B8%89%E8%A7%92/215098'
+        }
+      ]
     },
     {
       type: 'category',
