@@ -129,7 +129,15 @@ const sidebars = {
     {
       type: 'category',
       label: '3. 函数',
-      items: ['高中/函数/函数', '高中/函数/一次函数与二次函数']
+      items: [
+        '高中/函数/函数',
+        '高中/函数/一次函数与二次函数',
+        {
+          type: 'link',
+          label: '秦九韶_百度百科',
+          href: 'https://baike.baidu.com/item/%E7%A7%A6%E4%B9%9D%E9%9F%B6/363167#3'
+        }
+      ]
     },
     {
       type: 'category',
