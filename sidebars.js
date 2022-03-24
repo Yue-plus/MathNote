@@ -113,7 +113,17 @@ const sidebars = {
       items: [
         '高中/不等式/不等式的基本性质',
         '高中/不等式/不等式的解法',
-        '高中/不等式/不等式的应用'
+        '高中/不等式/不等式的应用',
+        {
+          type: 'link',
+          label: '等周问题_百度百科',
+          href: 'https://baike.baidu.com/item/%E7%AD%89%E5%91%A8%E9%97%AE%E9%A2%98/4315308'
+        },
+        {
+          type: 'link',
+          label: '华罗庚（中国科学院院士、数学家）_百度百科',
+          href: 'https://baike.baidu.com/item/%E5%8D%8E%E7%BD%97%E5%BA%9A/190988'
+        }
       ]
     },
     {
