@@ -141,6 +141,11 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: '4. 指数函数与对数函数',
+      items: ['高中/指数函数与对数函数/指数与指数函数']
+    },
+    {
+      type: 'category',
       label: '6. 数列',
       items: ['高中/数列/数列的概念', '高中/数列/等差数列', '高中/数列/等比数列']
     },
