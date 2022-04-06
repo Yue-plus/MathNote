@@ -55,8 +55,30 @@ const config = {
         logo: {alt: 'My Site Logo', src: 'img/logo.svg'},
         items: [
           {type: 'doc', docId: 'start', position: 'left', label: '开始项目'},
-          {type: 'doc', docId: '初中/整式的乘法与因式分解/整式的乘法', position: 'left', label: '初中'},
-          {type: 'doc', docId: '高中/集合/集合及其运算', position: 'left', label: '高中'},
+          {
+            type: 'dropdown',
+            label: '初中',
+            position: 'left',
+            items: [
+              {type: 'doc', label: '整式的乘法与因式分解', docId: '初中/整式的乘法与因式分解/整式的乘法'}
+            ]
+          },
+          {
+            type: 'dropdown',
+            label: '高中',
+            position: 'left',
+            items: [
+              {type: 'doc', label: '集合', docId: '高中/集合/集合及其运算'},
+              {type: 'doc', label: '不等式', docId: '高中/不等式/不等式的基本性质'},
+              {type: 'doc', label: '函数', docId: '高中/函数/函数'},
+              {type: 'doc', label: '指数函数与对数函数', docId: '高中/指数函数与对数函数/指数与指数函数'},
+              {type: 'doc', label: '数列', docId: '高中/数列/数列的概念'},
+              {type: 'doc', label: '平面向量', docId: '高中/平面向量/向量的加减运算'},
+              {type: 'doc', label: '直线和圆的方程', docId: '高中/直线和圆的方程/坐标系中的基本公式'},
+              {type: 'doc', label: '立体几何', docId: '高中/立体几何/空间中平面的基本性质'},
+              {type: 'doc', label: '概率与统计初步', docId: '高中/概率与统计初步/计数原理'},
+            ]
+          },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {href: 'https://note.yueplus.ink/', label: 'NetNote', position: 'right'},
           {href: 'https://www.geogebra.org/', label: 'GeoGebra - 数学教学软件', position: 'right'},
