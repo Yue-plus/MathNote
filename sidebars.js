@@ -154,6 +154,11 @@ const sidebars = {
     },
     {
       type: 'category',
+      label: '5. 三角函数',
+      items: ['高中/三角函数/角的概念的推广及其度量']
+    },
+    {
+      type: 'category',
       label: '6. 数列',
       items: ['高中/数列/数列的概念', '高中/数列/等差数列', '高中/数列/等比数列']
     },
