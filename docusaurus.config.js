@@ -54,7 +54,20 @@ const config = {
         title: 'MathNote',
         logo: {alt: 'My Site Logo', src: 'img/logo.svg'},
         items: [
-          {type: 'doc', docId: 'start', position: 'left', label: '开始项目'},
+          {
+            type: 'dropdown',
+            label: '开始项目',
+            position: 'left',
+            items: [
+              {type: 'doc', label: '开始项目', docId: 'start'},
+              {label: 'GitHub 使用方法', href: 'https://note.yueplus.ink/start/use_GitHub/'},
+              {label: 'VSCode 使用方法', href: 'https://note.yueplus.ink/start/use_VScode/'},
+              {label: 'IDEA 使用方法', href: 'https://note.yueplus.ink/start/use_IDEA/'},
+              {label: 'Markdown 语法', href: 'https://note.yueplus.ink/start/markdown.html'},
+              {label: 'YAML 语法', href: 'https://note.yueplus.ink/start/yaml.html'},
+              {label: 'KaTex 语法', href: 'https://katex.org/docs/supported.html'}
+            ]
+          },
           {
             type: 'dropdown',
             label: '初中',
