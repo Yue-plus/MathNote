@@ -142,7 +142,15 @@ const sidebars = {
     {
       type: 'category',
       label: '4. 指数函数与对数函数',
-      items: ['高中/指数函数与对数函数/指数与指数函数', '高中/指数函数与对数函数/对数与对数函数']
+      items: [
+        '高中/指数函数与对数函数/指数与指数函数',
+        '高中/指数函数与对数函数/对数与对数函数',
+        {
+          type: 'link',
+          label: '对数_百度百科',
+          href: 'https://baike.baidu.com/item/%E5%AF%B9%E6%95%B0/91326'
+        }
+      ]
     },
     {
       type: 'category',
