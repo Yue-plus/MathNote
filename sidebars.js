@@ -149,6 +149,11 @@ const sidebars = {
           type: 'link',
           label: '对数_百度百科',
           href: 'https://baike.baidu.com/item/%E5%AF%B9%E6%95%B0/91326'
+        },
+        {
+          type: 'link',
+          label: '自然常数e这个数，怎么就自然了？_哔哩哔哩_bilibili',
+          href: 'https://www.bilibili.com/video/BV1t3411p7Kn'
         }
       ]
     },
