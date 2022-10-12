@@ -15,12 +15,12 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 16.x
-          cache: yarn
+          cache: pnpm
 
       - name: 安装依赖
-        run: yarn install --frozen-lockfile
+        run: pnpm install
       - name: 构建网站
-        run: yarn build
+        run: pnpm build
 
       - name: 部署到 GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
