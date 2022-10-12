@@ -608,7 +608,7 @@ function waitUntil(event, asyncFn) {
 
 // @ts-ignore
 try {
-    self['workbox:core:6.5.1'] && _();
+    self['workbox:core:6.5.3'] && _();
 }
 catch (e) { }
 
@@ -1567,15 +1567,23 @@ class PrecacheStrategy extends workbox_strategies_Strategy_js__WEBPACK_IMPORTED_
             const integrityInManifest = params.integrity;
             const integrityInRequest = request.integrity;
             const noIntegrityConflict = !integrityInRequest || integrityInRequest === integrityInManifest;
+            // Do not add integrity if the original request is no-cors
+            // See https://github.com/GoogleChrome/workbox/issues/3096
             response = await handler.fetch(new Request(request, {
-                integrity: integrityInRequest || integrityInManifest,
+                integrity: request.mode !== 'no-cors'
+                    ? integrityInRequest || integrityInManifest
+                    : undefined,
             }));
             // It's only "safe" to repair the cache if we're using SRI to guarantee
             // that the response matches the precache manifest's expectations,
             // and there's either a) no integrity property in the incoming request
             // or b) there is an integrity, and it matches the precache manifest.
             // See https://github.com/GoogleChrome/workbox/issues/2858
-            if (integrityInManifest && noIntegrityConflict) {
+            // Also if the original request users no-cors we don't use integrity.
+            // See https://github.com/GoogleChrome/workbox/issues/3096
+            if (integrityInManifest &&
+                noIntegrityConflict &&
+                request.mode !== 'no-cors') {
                 this._useDefaultCacheabilityPluginIfNeeded();
                 const wasCached = await handler.cachePut(request, response.clone());
                 if (true) {
@@ -1774,7 +1782,7 @@ __webpack_require__.r(__webpack_exports__);
 
 // @ts-ignore
 try {
-    self['workbox:precaching:6.5.1'] && _();
+    self['workbox:precaching:6.5.3'] && _();
 }
 catch (e) { }
 
@@ -3325,7 +3333,7 @@ class Router {
 
 // @ts-ignore
 try {
-    self['workbox:routing:6.5.1'] && _();
+    self['workbox:routing:6.5.3'] && _();
 }
 catch (e) { }
 
@@ -4394,7 +4402,7 @@ class StrategyHandler {
 
 // @ts-ignore
 try {
-    self['workbox:strategies:6.5.1'] && _();
+    self['workbox:strategies:6.5.3'] && _();
 }
 catch (e) { }
 
@@ -4511,134 +4519,100 @@ __webpack_require__.r(__webpack_exports__);
  */
 /* eslint-disable no-restricted-globals */
 
-
-
 function parseSwParams() {
-  const params = JSON.parse(
-    new URLSearchParams(self.location.search).get('params'),
-  );
-  if (params.debug) {
-    console.log('[Docusaurus-PWA][SW]: Service Worker params:', params);
-  }
-  return params;
+    const params = JSON.parse(new URLSearchParams(self.location.search).get('params'));
+    if (params.debug) {
+        console.log('[Docusaurus-PWA][SW]: Service Worker params:', params);
+    }
+    return params;
 }
-
-// doc advises against dynamic imports in SW
+// Doc advises against dynamic imports in SW
 // https://developers.google.com/web/tools/workbox/guides/using-bundlers#code_splitting_and_dynamic_imports
 // https://twitter.com/sebastienlorber/status/1280155204575518720
 // but looks it's working fine as it's inlined by webpack, need to double check
 async function runSWCustomCode(params) {
-  if (false) {}
+    if (false) {}
 }
-
 /**
  * Gets different possible variations for a request URL. Similar to
  * https://git.io/JvixK
- *
- * @param {string} url
  */
 function getPossibleURLs(url) {
-  const possibleURLs = [];
-  const urlObject = new URL(url, self.location.href);
-
-  if (urlObject.origin !== self.location.origin) {
-    return possibleURLs;
-  }
-
-  // Ignore search params and hash
-  urlObject.search = '';
-  urlObject.hash = '';
-
-  // /blog.html
-  possibleURLs.push(urlObject.href);
-
-  // /blog/ => /blog/index.html
-  if (urlObject.pathname.endsWith('/')) {
-    possibleURLs.push(`${urlObject.href}index.html`);
-  } else {
-    // /blog => /blog/index.html
-    possibleURLs.push(`${urlObject.href}/index.html`);
-  }
-
-  return possibleURLs;
+    const urlObject = new URL(url, self.location.href);
+    if (urlObject.origin !== self.location.origin) {
+        return [];
+    }
+    // Ignore search params and hash
+    urlObject.search = '';
+    urlObject.hash = '';
+    return [
+        // /blog.html
+        urlObject.href,
+        // /blog/ => /blog/index.html
+        // /blog => /blog/index.html
+        `${urlObject.href}${urlObject.pathname.endsWith('/') ? '' : '/'}index.html`,
+    ];
 }
-
 (async () => {
-  const params = parseSwParams();
-
-  // eslint-disable-next-line no-underscore-dangle
-  const precacheManifest = [{"revision":"e0efb87e488d654bbdbe5e1d4e1c9c9a","url":"404.html"},{"revision":"c87128e2f036b39459ea25a91aac40c5","url":"assets/css/styles.c4d61ca8.css"},{"revision":"5941083f648290451d2f3e5a6818805e","url":"assets/js/01a85c17.ebb0e70e.js"},{"revision":"70da41bc3a0ac71e542221d0f8df3c8e","url":"assets/js/022a6124.d37ce55b.js"},{"revision":"7a0fff0d2334f390cab1d8928323a3e0","url":"assets/js/031793e1.a6985b72.js"},{"revision":"6b0bf57ace5b6a3708a18526a4efefaf","url":"assets/js/03e30179.dbcc2524.js"},{"revision":"bed11daf9a72827219b1b3d58fd0dac9","url":"assets/js/08c0b245.96c74fc8.js"},{"revision":"b3024ff1471298deb963f413b5dcdc1d","url":"assets/js/096bfee4.f050a843.js"},{"revision":"d9e7e310160e61e4f89f54f5bcb4229a","url":"assets/js/15ac5dd4.6fe6de92.js"},{"revision":"0ecbc60b5c3c50426469e33da207ecf8","url":"assets/js/17896441.242338a8.js"},{"revision":"53933cda46ab2992f11e4e82fe6ca3e2","url":"assets/js/1846eeb9.80d94033.js"},{"revision":"21361dabbb8fb4b241c157877c7aaf7e","url":"assets/js/193e7e5a.3ee0051b.js"},{"revision":"fca6b0bd069709319b588c9e876c9010","url":"assets/js/1be78505.da63c56b.js"},{"revision":"65a07c9a77869c4a14465755618d93b4","url":"assets/js/1df93b7f.e8aac2b9.js"},{"revision":"2b21b11dd85c6c480627ebe4310c6fdf","url":"assets/js/1e8c5184.55b9d2d1.js"},{"revision":"909d9e85e65af984b525e1cdc1214baf","url":"assets/js/208759ae.09e1ceb1.js"},{"revision":"3533c75946f923a405c05bedc5c53417","url":"assets/js/230.edba38f8.js"},{"revision":"f931f193a07f8631d845f00f5af19fd5","url":"assets/js/25402cd0.d8c9129a.js"},{"revision":"c68ae90c7191d19f3f1ba8c61655462d","url":"assets/js/30a24c52.50608e11.js"},{"revision":"225cf5d4ca5f4309f221e1b5431b1c5b","url":"assets/js/30e7dc6b.ec84c613.js"},{"revision":"11beebb2a05198decd2c016c8656b645","url":"assets/js/3bf22c9b.b85ac55e.js"},{"revision":"49ed7ef6db419717d6f00d7617d54818","url":"assets/js/3fb72812.f9dedd90.js"},{"revision":"68499ec6c3cfa9e3af97dec83234bd37","url":"assets/js/42180c56.1a68d628.js"},{"revision":"62981802535dff82f94110c410a725e7","url":"assets/js/455fb3d7.9269628d.js"},{"revision":"923e07d26ecb34f486a6671a85bc6333","url":"assets/js/4608.0fae6799.js"},{"revision":"a6d3753ebd514e707c37dd97286dc132","url":"assets/js/4771b518.ab0383da.js"},{"revision":"b0454b00f7ad98aeb918d1c60e90368d","url":"assets/js/4812.271a3643.js"},{"revision":"1c2c9686b4645748a86a3f0e4a4d1ad5","url":"assets/js/4c9e35b1.8712b491.js"},{"revision":"9d8234aa41ac9b92d2603f8ce77c8281","url":"assets/js/4d5777bc.4bb2ad39.js"},{"revision":"527baa4423742265ec37567804de7375","url":"assets/js/506d7327.51bbf1ef.js"},{"revision":"9cb2dc7871a62a0c7eeb53bc60ca32a2","url":"assets/js/5131.6c94adda.js"},{"revision":"8c99a8a81ab66eda2dbf3f1b8276c9fa","url":"assets/js/5283.14e02646.js"},{"revision":"040058e8b1bac076a72763f60de19947","url":"assets/js/5347dae6.f5c68e0e.js"},{"revision":"b63711d5710a2e49d82f5aa1bffeba55","url":"assets/js/5557cdcb.16120450.js"},{"revision":"3e183101df110a9c3b609ed66ba95ce0","url":"assets/js/570b135a.6449c13c.js"},{"revision":"56e567587bcfbf5f6ace7a7b226de8a9","url":"assets/js/59362658.09051e6a.js"},{"revision":"2f1a3de303f4614deba491f7137085cf","url":"assets/js/608ae6a4.fff5e936.js"},{"revision":"ebb14fe9df6ff1c36a729b365342a77c","url":"assets/js/624c30c2.c2ae3100.js"},{"revision":"cd093b29568bf325d547c2f845fee0d5","url":"assets/js/64541497.f14acf4c.js"},{"revision":"8980c8ff390084dcfae0fcfceb3c8021","url":"assets/js/6543081b.392f4ead.js"},{"revision":"b617a61e15255512a155af1b5481ffbb","url":"assets/js/66406991.0410839b.js"},{"revision":"6cf9623f288ac586dbf93e1d6df0bd26","url":"assets/js/6875c492.db997264.js"},{"revision":"c8510883155a1cf8919b8602e02fc692","url":"assets/js/6bb265fc.84a3d465.js"},{"revision":"4cc5d39b1966dccd77ff7cc7d54e5971","url":"assets/js/6fe9909d.5aac3751.js"},{"revision":"519a18b31dc649605b706c06ad77c5c9","url":"assets/js/73664a40.54fa7b50.js"},{"revision":"c7049f0ac82e40e19f85c05b0c9ae1f8","url":"assets/js/7661071f.eeb31f99.js"},{"revision":"97a82f488221c05117f607da64f9fcbb","url":"assets/js/7cf34973.d4458790.js"},{"revision":"a63ea8b64e4804bea59f8377d1382246","url":"assets/js/814f3328.d2e49183.js"},{"revision":"bfb64baf2fd87322ec0cce2216189bc2","url":"assets/js/83f73270.eda06c72.js"},{"revision":"2a3591f180036ce22963ee9dc8ea3f1e","url":"assets/js/8717b14a.2bc7e570.js"},{"revision":"a05689829cbf43609fb099eca445467d","url":"assets/js/8821a35c.cf1937bf.js"},{"revision":"9fea78995afe3688598047fafa91f9aa","url":"assets/js/882ffab9.d31918f4.js"},{"revision":"83cbcb89797c0f0ba96ccd65c48657c6","url":"assets/js/88b1f6c4.eb3f5ffe.js"},{"revision":"55e3b6614dab427ccef7654fd9b5fccb","url":"assets/js/8d59a5b0.c408bba9.js"},{"revision":"4d242fb1aa0b90e8a1580018c4ca10f1","url":"assets/js/8e5c9608.7659a79e.js"},{"revision":"e2548c513a5d959fb09e482cbe6de146","url":"assets/js/923a317d.aeda40cb.js"},{"revision":"51b2682e573e6d5aa49e3fbacc44a23b","url":"assets/js/925b3f96.7e54877b.js"},{"revision":"ee89bb5de551162564ba815011c2be68","url":"assets/js/9322ccbc.d821b1ba.js"},{"revision":"fc8d56322be9ee02da7f4d0ed91e77c5","url":"assets/js/935f2afb.10601341.js"},{"revision":"85e767619e277efa807bdd60750d78c3","url":"assets/js/98ce8162.b690fe46.js"},{"revision":"9200718c11e52b7de58a32288a09ae3c","url":"assets/js/995e07d9.02934459.js"},{"revision":"7f5340d82adbc98da099b5e79ba56684","url":"assets/js/9a88d4f5.b326a7be.js"},{"revision":"97c48a8dfecfa3453f2f671a3dd1cee2","url":"assets/js/9e4087bc.a2e77f55.js"},{"revision":"b3c9df8eedaaa7f03965caead90f6f41","url":"assets/js/a6aa9e1f.43229b28.js"},{"revision":"66d2681b2579b41c41c264eb19e3e172","url":"assets/js/a7023ddc.d920d1fb.js"},{"revision":"e8d9650eac8514a5be7356d7e2067c2a","url":"assets/js/a80da1cf.7f973e3a.js"},{"revision":"a15daaf93419ce8f5dc377026b2b2822","url":"assets/js/b2b675dd.c7c1a6bb.js"},{"revision":"a8e7c04bfcb4f1017af3e0adb0bd1b0b","url":"assets/js/b2f554cd.7c12b48f.js"},{"revision":"99fec0d6f6004d3e76c6d6ed7cf18a60","url":"assets/js/b30fd49a.b6d5f3e3.js"},{"revision":"820b225475b0db05953df0cd45436294","url":"assets/js/b5d2e7b9.7e58e13d.js"},{"revision":"d5626defda8096b9abf80191b61c7fa4","url":"assets/js/b7815063.9380ff96.js"},{"revision":"f00315641191c091df9d2ae238a66393","url":"assets/js/b9a11cc8.02528283.js"},{"revision":"09f3f23d6cadb113aadf009c5a8ab2f7","url":"assets/js/ba6a9c32.2bdb6d19.js"},{"revision":"3b1a187de928c265803cd57958bd3bd8","url":"assets/js/c0420b7c.e7a85e3b.js"},{"revision":"0ab440b74b280b7f9cb71352d6df3bd6","url":"assets/js/ccc49370.6519c3f4.js"},{"revision":"6fc9fe92ad20fa718828260a60590942","url":"assets/js/cd4cb5ab.15abc15e.js"},{"revision":"b837406a00e966e079a180154cf006b5","url":"assets/js/d03ae3cf.924303b9.js"},{"revision":"a6c7eef1472db974ce914ed1a348ff34","url":"assets/js/d2ffb653.7f6d80e1.js"},{"revision":"6bfc71920a2c4e2818a2363e2d7f88cd","url":"assets/js/d73aefb0.e645eaab.js"},{"revision":"0c5da350c2fd51e3a3215dbc97aa1cd5","url":"assets/js/d7c9602f.e3fa5c32.js"},{"revision":"d449e39672a04112e0f9d13f9d5c9bff","url":"assets/js/d9f32620.f1ae869d.js"},{"revision":"923d29af78cbce8468d045934e125f93","url":"assets/js/dbda09ab.9d6eae67.js"},{"revision":"fabc8cb9ec2c736d7d019e2388991690","url":"assets/js/dc1b2c40.900f384b.js"},{"revision":"12197f5630e12e6d91a1df382440839f","url":"assets/js/e16015ca.38d77b10.js"},{"revision":"7a9dc296dc5d8af8ef5a2ea59156439b","url":"assets/js/e273c56f.e94c0a17.js"},{"revision":"5a39990bb1260ecb0b65c5eb9ceba434","url":"assets/js/e4d395cb.1c183b2e.js"},{"revision":"ae510219bebb015533d8827d7726c77e","url":"assets/js/eb803d72.489ea10b.js"},{"revision":"69d28745e431101bc4038db4cec20e34","url":"assets/js/ec7f890a.f97ba981.js"},{"revision":"c5f7d6aaebf9a4a12f2e9bb73c283887","url":"assets/js/ef130de1.5c1881e9.js"},{"revision":"4086edd6e66f2f39eda3efc85b8416f8","url":"assets/js/efae1a4c.75d1abdd.js"},{"revision":"7dd196a2776fb038c05b332ea2890858","url":"assets/js/f13bfb9c.e58d1d5f.js"},{"revision":"2aa07efce325074d13732e6713a98ca1","url":"assets/js/f195ecd8.1ca33863.js"},{"revision":"890ed288b37c43f7d43a43e04b7135b5","url":"assets/js/f2781359.922f4d30.js"},{"revision":"fac17d43b7e4c568cb691a7d8ad3daca","url":"assets/js/f3ce824c.43784987.js"},{"revision":"e1ce407fae39c76cc15fad11eb028864","url":"assets/js/f413e1dd.314a0891.js"},{"revision":"773c590608db7ddf7e606ae86b7eb6a3","url":"assets/js/f4f34a3a.22bae177.js"},{"revision":"0b0fd7bebb69ac368b7e9ca988146b0f","url":"assets/js/f7af474e.7e93b1a3.js"},{"revision":"d260e41c4fb4622abcd1c99ffc095fa9","url":"assets/js/main.e247fcef.js"},{"revision":"2d71f7ed79232aa4718f8d74740ec669","url":"assets/js/runtime~main.5cf7d665.js"},{"revision":"2b6f03e6c89c00817c16dd1c0eb2bb04","url":"blog/archive/index.html"},{"revision":"e6154e3a289c28fadca4ac0b3af00b3d","url":"blog/first-blog-post/index.html"},{"revision":"26ff904e169460039c7eae8215d100cf","url":"blog/index.html"},{"revision":"c4ddee65988441a52989cb82328ab8fc","url":"blog/long-blog-post/index.html"},{"revision":"851fddc8fff0ded51acf7bdd08ec7339","url":"blog/mdx-blog-post/index.html"},{"revision":"8135899b999196522606c32b20c64bbe","url":"blog/tags/docusaurus/index.html"},{"revision":"d9d36aaa3aa68fb9da7196315415ed75","url":"blog/tags/facebook/index.html"},{"revision":"323900e4ac64df44c7a996a1bdf19874","url":"blog/tags/hello/index.html"},{"revision":"5920ed803dabcdda052328dcc87c43ce","url":"blog/tags/hola/index.html"},{"revision":"9f0cf3ad75bfdc3fddb780dd1eeb3590","url":"blog/tags/index.html"},{"revision":"767a00db75a37a542cf0b1b7cb7f1916","url":"blog/welcome/index.html"},{"revision":"c523cccd97f4ba6e41916faffd1c49e9","url":"docs/start/index.html"},{"revision":"be92b31692ee26aedae18cd3eea3c33a","url":"docs/初中/一元二次方程/一元二次方程/index.html"},{"revision":"d0e350eb2127470aae088f49784e47d4","url":"docs/初中/一元二次方程/实际问题与一元二次方程/index.html"},{"revision":"03b2a09edc302b44458dbcc3d4364789","url":"docs/初中/一元二次方程/解一元二次方程/index.html"},{"revision":"b344a2f53277e86ea8a2ffc4eddef766","url":"docs/初中/二次函数/二次函数与一元二次方程/index.html"},{"revision":"e905ab3ab30820e8f3ed3e533ae100d4","url":"docs/初中/二次函数/二次函数的图象和性质/index.html"},{"revision":"09611dbc06b7d7456d06ece21ead588e","url":"docs/初中/二次函数/实际问题与二次函数/index.html"},{"revision":"b7f02b77fc8815e949b709e49412da50","url":"docs/初中/反比例函数/反比例函数/index.html"},{"revision":"0cb464649961e84a1444f83f5712b09e","url":"docs/初中/反比例函数/实际问题与反比例函数/index.html"},{"revision":"5a632afb898eec401ebf02121b3d2143","url":"docs/初中/圆/圆的有关性质/index.html"},{"revision":"25d2638cb16ea97e71eb173d3891d7a9","url":"docs/初中/圆/弧长和扇形面积/index.html"},{"revision":"754b993baf20e522e3849f737a969f00","url":"docs/初中/圆/正多边形和圆/index.html"},{"revision":"c9affa10cc059ec325bc0cc78284d37d","url":"docs/初中/圆/点和圆、直线和圆的位置关系/index.html"},{"revision":"2de2038153369f2f97025dd8d2ad5b7a","url":"docs/初中/投影与视图/三视图/index.html"},{"revision":"00f1258fdc68792ee25a26f91f9ef6fb","url":"docs/初中/投影与视图/制作立体模型/index.html"},{"revision":"969e39fd7289ed200e9b61054587f231","url":"docs/初中/投影与视图/投影/index.html"},{"revision":"515850143f923e0efeb3707239f0e803","url":"docs/初中/整式的乘法与因式分解/乘法公式/index.html"},{"revision":"d5d693ecfee3e32e7388ef6a3038acb0","url":"docs/初中/整式的乘法与因式分解/交叉（十字）相乘法/index.html"},{"revision":"c5c59878fa682b52a68986c30e82314f","url":"docs/初中/整式的乘法与因式分解/因式分解/index.html"},{"revision":"ac24e4203d2f43b3c6e1eca69267fd9e","url":"docs/初中/整式的乘法与因式分解/整式的乘法/index.html"},{"revision":"2b565e5f7f9af968b503ba44db8f58f1","url":"docs/初中/旋转/中心对称/index.html"},{"revision":"facb096c0049bd5cda9e10d1b89a9e5a","url":"docs/初中/旋转/图形的旋转/index.html"},{"revision":"559652ef9a4e702adf080bc6de7d5986","url":"docs/初中/旋转/图案设计/index.html"},{"revision":"0100a7681ecd354d519e717372cd0be2","url":"docs/初中/概率初步/用列举法求概率/index.html"},{"revision":"16a5f82b54194204ed206968f7a93097","url":"docs/初中/概率初步/用频率估计概率/index.html"},{"revision":"b5bd99b25312eed0f88849a26b91f024","url":"docs/初中/概率初步/随机事件与概率/index.html"},{"revision":"e886c8be55c02a7a663e7c58fe5f259a","url":"docs/初中/相似/位似/index.html"},{"revision":"f19d15b419c19ef52cbe1add08d62cf8","url":"docs/初中/相似/图形的相似/index.html"},{"revision":"691d44db2fba1a9581fb42d35742885c","url":"docs/初中/相似/相似三角形/index.html"},{"revision":"6da38e9d1757bda8c9059020a3f24c3e","url":"docs/初中/锐角三角函数/解直角三角形及其应用/index.html"},{"revision":"d7e0977abe220c227e39b4c92a969493","url":"docs/初中/锐角三角函数/锐角三角函数/index.html"},{"revision":"a16664b157196925409b96d7eef55071","url":"docs/高中/三角函数/角的概念的推广及其度量/index.html"},{"revision":"22bcf2ffca1efdf82e4f1e4b9bc395df","url":"docs/高中/不等式/不等式的基本性质/index.html"},{"revision":"4318f9fa48f06085c191054667c2af84","url":"docs/高中/不等式/不等式的应用/index.html"},{"revision":"b688594c2edeaf5c0e5591e91a3b821d","url":"docs/高中/不等式/不等式的解法/index.html"},{"revision":"ff604546ce5fd15f4b2d799066c0ec15","url":"docs/高中/函数/一次函数与二次函数/index.html"},{"revision":"6d91ebffe7b8d46137812af3633055a4","url":"docs/高中/函数/函数/index.html"},{"revision":"d30f87594ba32f0d8525bbdced3eea08","url":"docs/高中/平面向量/向量的内积及其运算/index.html"},{"revision":"2cef4ca209177e5a40163b83823733bf","url":"docs/高中/平面向量/向量的加减运算/index.html"},{"revision":"c1bbf00c2ec3473f93638e19e2f80390","url":"docs/高中/平面向量/向量的坐标表示/index.html"},{"revision":"2baf28f97988244370e75673831a7394","url":"docs/高中/平面向量/数乘向量/index.html"},{"revision":"93a4c9eb1f80163d99d340063f7473bc","url":"docs/高中/指数函数与对数函数/对数与对数函数/index.html"},{"revision":"c024671edf93a6efb52916eb77324ef4","url":"docs/高中/指数函数与对数函数/指数与指数函数/index.html"},{"revision":"9e6ee4f7b1f0dfcd7b4e7541fe73b604","url":"docs/高中/数列/数列的概念/index.html"},{"revision":"82916569d0eb1efe5349727397ce8444","url":"docs/高中/数列/等差数列/index.html"},{"revision":"ba86b594f5cd1666385d4914254afa22","url":"docs/高中/数列/等比数列/index.html"},{"revision":"087e0be3f8a487a0a245d3be8718216f","url":"docs/高中/概率与统计初步/概率初步/index.html"},{"revision":"9e83cf3f1180045c543eb90f8a729b60","url":"docs/高中/概率与统计初步/统计初步/index.html"},{"revision":"058e5a0dde6f6562c712511c9d5524f7","url":"docs/高中/概率与统计初步/计数原理/index.html"},{"revision":"dec7cee727fab20f6a6217a5644acec4","url":"docs/高中/直线和圆的方程/圆的方程/index.html"},{"revision":"01d325c4f6e1ba344fe03f9faf53e1f8","url":"docs/高中/直线和圆的方程/坐标系中的基本公式/index.html"},{"revision":"cc31943cd094eb23df3ac97d676e7740","url":"docs/高中/直线和圆的方程/直线的方程/index.html"},{"revision":"338cc726a5634380e8ddc0b608040919","url":"docs/高中/立体几何/多面体与旋转体/index.html"},{"revision":"bacfc1c980f850a1d7176c6f88acd7da","url":"docs/高中/立体几何/空间中垂直关系和角/index.html"},{"revision":"0e9fe56a95ddf9a66044e652b5c14d91","url":"docs/高中/立体几何/空间中平面的基本性质/index.html"},{"revision":"7e943da7cefb43dedf479b9342232d2b","url":"docs/高中/立体几何/空间中的平行关系/index.html"},{"revision":"f791a097571f38dbee1649f6342db4c8","url":"docs/高中/集合/充要条件/index.html"},{"revision":"a4a5addebcb3b4e4e2e50e422e240064","url":"docs/高中/集合/集合及其运算/index.html"},{"revision":"7dccc4acb03f9c807f3544a737208300","url":"index.html"},{"revision":"dc4ab606d5521a48e513600dd2a52077","url":"manifest.json"},{"revision":"579ea04ba5e80ecc12e1f392427eefbc","url":"assets/images/02-f93608ec44def749837e6c50bacce7f0.jpg"},{"revision":"192a6a160f31b1689a4c6233bdbbb803","url":"assets/images/docusaurus-plushie-banner-a60f7593abca1e3eef26a9afa244e4fb.jpeg"},{"revision":"86c87b66e2a9551f823f4984ec43d9c9","url":"assets/images/增函数与减函数-04a764f6346de9c7cd094abe374bfe85.jpg"},{"revision":"f8c7f130df6a7d392c8d68f9c7f13473","url":"assets/images/数轴-87591e8bef71bb00bd41c72302e28eaf.jpg"},{"revision":"13d5df082b78d786524510557c697373","url":"assets/images/数轴上的实数关系-9f5efc4e595109a1bb4f074accc43369.jpg"},{"revision":"0ba8a753a8bc8cc929ebdc0bc547c62d","url":"assets/images/维恩图-93f0fca79102b45d098826757f006111.jpg"},{"revision":"7fa1a026116afe175cae818030d4ffc4","url":"img/docusaurus.png"},{"revision":"4343e07bf942aefb5f334501958fbc0e","url":"img/favicon.ico"},{"revision":"aa4fa2cdc39d33f2ee3b8f245b6d30d9","url":"img/logo.svg"},{"revision":"b9d9189ed8f8dd58e70d9f8b3f693b3e","url":"img/tutorial/docsVersionDropdown.png"},{"revision":"c14bff79aafafca0957ccc34ee026e2c","url":"img/tutorial/localeDropdown.png"},{"revision":"a6b83d7b4c3cf36cb21eb7a9721716dd","url":"img/undraw_docusaurus_mountain.svg"},{"revision":"b64ae8e3c10e5ff2ec85a653cfe6edf8","url":"img/undraw_docusaurus_react.svg"},{"revision":"8fa6e79a15c385d7b2dc4bb761a2e9e3","url":"img/undraw_docusaurus_tree.svg"}];
-  const controller = new workbox_precaching__WEBPACK_IMPORTED_MODULE_0__.PrecacheController({
-    fallbackToNetwork: true, // safer to turn this true?
-  });
-
-  if (params.offlineMode) {
-    controller.addToCacheList(precacheManifest);
-    if (params.debug) {
-      console.log('[Docusaurus-PWA][SW]: addToCacheList', {
-        precacheManifest,
-      });
-    }
-  }
-
-  await runSWCustomCode(params);
-
-  self.addEventListener('install', (event) => {
-    if (params.debug) {
-      console.log('[Docusaurus-PWA][SW]: install event', {
-        event,
-      });
-    }
-    event.waitUntil(controller.install(event));
-  });
-
-  self.addEventListener('activate', (event) => {
-    if (params.debug) {
-      console.log('[Docusaurus-PWA][SW]: activate event', {
-        event,
-      });
-    }
-    event.waitUntil(controller.activate(event));
-  });
-
-  self.addEventListener('fetch', async (event) => {
+    const params = parseSwParams();
+    // eslint-disable-next-line no-underscore-dangle
+    const precacheManifest = [{"revision":"9cec8ec3c9a2b1de6703e0a4250a3555","url":"404.html"},{"revision":"74aba5376a0926647d0663c8a76f973f","url":"assets/css/styles.262cbbf4.css"},{"revision":"9a9cd23fe02c61acbece57ca3906c67c","url":"assets/js/01a85c17.858c681f.js"},{"revision":"b2f639804128fafab3b82b126052aadf","url":"assets/js/022a6124.719d0fe7.js"},{"revision":"c8d6c21a56fcf04cf29a81b2a023ad27","url":"assets/js/031793e1.180b9a84.js"},{"revision":"6864eb7e244138e337abf349c62ede7f","url":"assets/js/03e30179.dd729660.js"},{"revision":"7667baa333630a31ff29b3372d9bfcae","url":"assets/js/08c0b245.0af91003.js"},{"revision":"1668a30a086877a46e03f546a23de8b0","url":"assets/js/096bfee4.6eeb5d83.js"},{"revision":"a318a37479bc0e8085c7023b729089b1","url":"assets/js/15ac5dd4.6a3fcb66.js"},{"revision":"27acb4d72e63bf7a683c2971e3668ee1","url":"assets/js/17896441.6ad34e25.js"},{"revision":"64fcdf7249eb324db558fb9147978618","url":"assets/js/1846eeb9.615007ca.js"},{"revision":"9c04d5426e2eaac9bea1ac041ee003f9","url":"assets/js/193e7e5a.6f869133.js"},{"revision":"7e8dc67c4c1a27ae641a3b424b3853ac","url":"assets/js/1be78505.1ebace30.js"},{"revision":"093c10101816f7e35345124d14badb7d","url":"assets/js/1df93b7f.fcc7ff5d.js"},{"revision":"a9eac58cc3d328228e0fff3aafc5ea74","url":"assets/js/1e8c5184.32c9dc4e.js"},{"revision":"1b1b2e4dee12f531bdc79e8c37e50a1e","url":"assets/js/208759ae.3f934440.js"},{"revision":"98964b2f3722f0cd31c73a53f3dd0174","url":"assets/js/230.34b506f1.js"},{"revision":"70ff5674b29d25573b4f770ff315096f","url":"assets/js/25402cd0.71a56e4e.js"},{"revision":"5021d889a6cedf1634e93c94d29e4b75","url":"assets/js/30a24c52.ff2aaa25.js"},{"revision":"c7e5a2e4ae4bc0f4bbc7ffa990a2a074","url":"assets/js/30e7dc6b.dd621bd6.js"},{"revision":"df31edb47a474741d43e797cf2b8a4e5","url":"assets/js/3bf22c9b.3fd3534f.js"},{"revision":"a3c047754b3395fd9a5ae2cea09a9081","url":"assets/js/3fb72812.de5c1518.js"},{"revision":"c798c2a7516dcef9ca5aaf937354bce5","url":"assets/js/42180c56.518c56eb.js"},{"revision":"43f7bd024d86502032846636921398bb","url":"assets/js/455fb3d7.b9e4c318.js"},{"revision":"0de638263c1e24d9f54221c342bb7661","url":"assets/js/4771b518.fd3b7ee5.js"},{"revision":"edac86b0ea80878bd22019755d56dec0","url":"assets/js/4972.40884163.js"},{"revision":"dd2659236720c4f72e3ba6897c0b9f21","url":"assets/js/4c9e35b1.cd47ade5.js"},{"revision":"1dd780ccbb6e945e71aa2091401a6533","url":"assets/js/4d5777bc.6662bf6e.js"},{"revision":"a7c58703055696185078fd04d7adef05","url":"assets/js/506d7327.616667de.js"},{"revision":"451d3c71dcbf1b3d3e41c1eefed9af0b","url":"assets/js/5131.cb448eab.js"},{"revision":"eed90a5f2f99431481289634f8d8ff9a","url":"assets/js/5283.7c129b83.js"},{"revision":"f147791817cd1fc3633f45c814f7f006","url":"assets/js/5347dae6.255614fe.js"},{"revision":"45f30cb80e5f09bec9f5b3ff0c923f72","url":"assets/js/5557cdcb.48353b46.js"},{"revision":"e3d86769932eb11bce714a8b9d5b47e9","url":"assets/js/570b135a.119865bb.js"},{"revision":"a58ed56aca761a2345c6d025387d25e1","url":"assets/js/59362658.421d10f9.js"},{"revision":"da4530112bbff1d39e9a4c3127e76af0","url":"assets/js/6048.526ca9ee.js"},{"revision":"0936e8ab69a082e6716e07e533d74dfc","url":"assets/js/608ae6a4.838897c3.js"},{"revision":"3b6cafb5ebe1458b02d49745439f273a","url":"assets/js/624c30c2.6d8cc7d1.js"},{"revision":"65e4d69787070a3fc40ff71a75d64ecb","url":"assets/js/64541497.399cc971.js"},{"revision":"192b0aeec4df58eb79273525d621a904","url":"assets/js/6543081b.13f6a097.js"},{"revision":"c4f1b914b585ce8f79381fc95f9d0c8a","url":"assets/js/66406991.0053b815.js"},{"revision":"d80869502c51baaa8d45e02269c7ec29","url":"assets/js/6875c492.546d0443.js"},{"revision":"129f8452b7ce31e7bf3569f8c077b576","url":"assets/js/6bb265fc.7f02f5d0.js"},{"revision":"d99a69f8b71a11b745bcd8c2eb852a03","url":"assets/js/6fe9909d.609135ba.js"},{"revision":"b64fb9a04fd2d8fba23fe3acf027cdf1","url":"assets/js/7036.b9ea1c83.js"},{"revision":"c09956d3048b51e75fde928b860baa97","url":"assets/js/73664a40.915dc0b7.js"},{"revision":"10f33d8b79958d31cc3b26b47a9a73ae","url":"assets/js/7661071f.be482b6b.js"},{"revision":"37ab4ebe358b7362009f3ee580ab4633","url":"assets/js/7cf34973.d0e023df.js"},{"revision":"105c019835901181519b20273a54dee6","url":"assets/js/814f3328.57ec7bf7.js"},{"revision":"787f9d59756abd97cba4a337976d2f06","url":"assets/js/83f73270.bf898f7a.js"},{"revision":"7aa87c10867bd65a4172fbcf0fbcf994","url":"assets/js/8717b14a.177b6fe6.js"},{"revision":"a2b228afbf6e416fa37dfdaf0698d09a","url":"assets/js/8821a35c.025b36e8.js"},{"revision":"16c38728d35963afb51e99354144521a","url":"assets/js/882ffab9.b339c5ed.js"},{"revision":"f6313fd60e91f6539f0bec92a4d5c400","url":"assets/js/88b1f6c4.b12d1a7c.js"},{"revision":"ceba60e6237d2fe125882f717ac16d1c","url":"assets/js/8d59a5b0.a45c44cf.js"},{"revision":"4272106f296a9b2b490086e6364d1dcd","url":"assets/js/8e5c9608.6396548e.js"},{"revision":"9283dd48715003022ed5b16e33632cf6","url":"assets/js/923a317d.3e85118d.js"},{"revision":"93b9bba4294f1fcf333d14bbfe3b2a65","url":"assets/js/925b3f96.a01ded9f.js"},{"revision":"fa842b1548e5dc36a31fd2d5f5fdbaa0","url":"assets/js/9322ccbc.44ad81e7.js"},{"revision":"6bef58479f4e695ea7d5df96cfef1336","url":"assets/js/935f2afb.15cef734.js"},{"revision":"2e1e409fc38308548ba5caa809fb0b80","url":"assets/js/98ce8162.51780688.js"},{"revision":"56a4c5a43ead1f17b310c37f3629bcfc","url":"assets/js/995e07d9.e7835831.js"},{"revision":"babd89f11bf4c50a7a0e9d5838a7545a","url":"assets/js/9a88d4f5.92940573.js"},{"revision":"aaa5e6c15a7b6ead07a84423f59acc12","url":"assets/js/9e4087bc.9f41614d.js"},{"revision":"7243acec26e97d1a1d211dc38deec398","url":"assets/js/a6aa9e1f.89cc3daf.js"},{"revision":"fcec40ea6ca3e8f5794c0826888c1ece","url":"assets/js/a7023ddc.618a1621.js"},{"revision":"c463cd169f08b23eda384b9f4ba85a8f","url":"assets/js/a80da1cf.4a1ed3b3.js"},{"revision":"88241e6735e8affc0066860b9d471ae6","url":"assets/js/b2b675dd.cf12dcf9.js"},{"revision":"243f968ce7243d7ae609a026128c62e6","url":"assets/js/b2f554cd.2c6828bb.js"},{"revision":"b5845b46461cd5ead0bb8eba24a1b65e","url":"assets/js/b30fd49a.9461ff22.js"},{"revision":"397b87e56a568211a6c21aa03998da01","url":"assets/js/b5d2e7b9.7aea00f0.js"},{"revision":"51e0567e6efe1bd06ab7950bc0b2e255","url":"assets/js/b7815063.0fd7b520.js"},{"revision":"59e950d36209dff082ae8c4a0a3fef5a","url":"assets/js/b9a11cc8.97fff0b9.js"},{"revision":"3c3750460ee6544fe92f214216112a6d","url":"assets/js/ba6a9c32.d39424a5.js"},{"revision":"0256991f1f4ede21c179ae311ba6a9ec","url":"assets/js/c0420b7c.7f4c2d50.js"},{"revision":"0f8c1198b9c69526a37c6d5e29e96c64","url":"assets/js/ccc49370.d138fbaa.js"},{"revision":"1926a2290ed453088542ed70f0d941eb","url":"assets/js/cd4cb5ab.ba4c3ef5.js"},{"revision":"0081c50b20fbe2663fdeaf2a8ddc02f3","url":"assets/js/d03ae3cf.03b0cc53.js"},{"revision":"fdd349adf10f4b3183b9710b981c9b74","url":"assets/js/d2ffb653.ca873e56.js"},{"revision":"2213f084bf1d84105faf7f9aeb976b12","url":"assets/js/d73aefb0.31ed463f.js"},{"revision":"728e0047e3f7fe134315d62307613e9c","url":"assets/js/d7c9602f.6172ed9a.js"},{"revision":"2bcdabd49c10fe7858bd26858a64ebc1","url":"assets/js/d9f32620.71121189.js"},{"revision":"82a79ffca7c5ef7f98684a505e55ebcf","url":"assets/js/dbda09ab.ed544727.js"},{"revision":"cd9109217b10ebe254d318be6faa244f","url":"assets/js/dc1b2c40.52d07326.js"},{"revision":"f54cee6d836b027727b3160ef27d8005","url":"assets/js/e16015ca.ff734551.js"},{"revision":"4e5d9f254af1b016ea11bdd1d6193f33","url":"assets/js/e273c56f.964aedfe.js"},{"revision":"282d76f4260b1803f2d83d328175dc50","url":"assets/js/e4d395cb.1b969067.js"},{"revision":"119e886f592678816ff7d044b9cef618","url":"assets/js/eb803d72.a15ef033.js"},{"revision":"ea0e708e4978835072289d7f92f001a1","url":"assets/js/ec7f890a.14262df7.js"},{"revision":"1eda02700ea8622332b2ca7ecc165dd9","url":"assets/js/ef130de1.a5b15363.js"},{"revision":"566f67aa5db6baf0ce70ce853e6d684d","url":"assets/js/efae1a4c.5f31b0d6.js"},{"revision":"f1fdc7f4337a975ea90b5c30f09b368c","url":"assets/js/f13bfb9c.7d3cce84.js"},{"revision":"8a09c18dbf3ce7f6d1ee609d7cde780f","url":"assets/js/f195ecd8.280e8fcf.js"},{"revision":"149038d6b2bf4b146e4c1c50f1dbec36","url":"assets/js/f2781359.93a7579d.js"},{"revision":"76275bda3c2f1763fd215a78a149674c","url":"assets/js/f3ce824c.d62d5d1e.js"},{"revision":"1c007d62f6a4c22443d38aab1f5bfbdc","url":"assets/js/f413e1dd.b4892ed4.js"},{"revision":"ef5c0d8719538758c7fa4888c7b54fe4","url":"assets/js/f4f34a3a.eb29f60f.js"},{"revision":"c7b3ffcfa9b4dfa2079f2134612cb875","url":"assets/js/f7af474e.164e7efe.js"},{"revision":"c9d72c253d5f79eeb4a516d7fd2ab4d3","url":"assets/js/main.900dc7a5.js"},{"revision":"1dc7f1537c55619cd92b6bd9d2ccdce9","url":"assets/js/runtime~main.56ad0148.js"},{"revision":"e215dc567c296be076ed6138501df095","url":"blog/archive/index.html"},{"revision":"522ed18ef0df14ec1b8bd87c3ef43076","url":"blog/first-blog-post/index.html"},{"revision":"89fbf9c3c5fd76c65a4f64aae8a4c2e3","url":"blog/index.html"},{"revision":"916b0461708590ba6f12562f88ec09d0","url":"blog/long-blog-post/index.html"},{"revision":"af0282fe80c30e72d5ce06e77641b56a","url":"blog/mdx-blog-post/index.html"},{"revision":"9ff03f91d3d9e0cce19d420bea4153c3","url":"blog/tags/docusaurus/index.html"},{"revision":"74a814114b7f4838ab578166218a3bb8","url":"blog/tags/facebook/index.html"},{"revision":"13c81be1da48abd45ddd2c4071783b01","url":"blog/tags/hello/index.html"},{"revision":"c4b8783ada300c83254b03f5061bc4e1","url":"blog/tags/hola/index.html"},{"revision":"f7e3091ba67ea0e0d1888197f173f669","url":"blog/tags/index.html"},{"revision":"8b192a741d0283a372bf6a77eb18e884","url":"blog/welcome/index.html"},{"revision":"26e90f068384144edfae71e0ec285697","url":"docs/start/index.html"},{"revision":"2b19e1f727d8ea543b3b24c1017c8572","url":"docs/初中/一元二次方程/一元二次方程/index.html"},{"revision":"4989ea07ec893a6bf662a6a23362142f","url":"docs/初中/一元二次方程/实际问题与一元二次方程/index.html"},{"revision":"f12cd333673dd683b27ea89748d70e9e","url":"docs/初中/一元二次方程/解一元二次方程/index.html"},{"revision":"75a4250f9f5be200d728b60bf1a487f2","url":"docs/初中/二次函数/二次函数与一元二次方程/index.html"},{"revision":"1cb162855dd0cefc1016c1d59b087286","url":"docs/初中/二次函数/二次函数的图象和性质/index.html"},{"revision":"d81a0b710102a6800848844b089468f1","url":"docs/初中/二次函数/实际问题与二次函数/index.html"},{"revision":"2b441fce95dffb4f96f64eec7e7b58dc","url":"docs/初中/反比例函数/反比例函数/index.html"},{"revision":"044d9d324b0d3e13020ce291453d0703","url":"docs/初中/反比例函数/实际问题与反比例函数/index.html"},{"revision":"7813f153e9462e83b94e039bfc5d9fc9","url":"docs/初中/圆/圆的有关性质/index.html"},{"revision":"6fc66a517250f1ee0f911bad5bdb377d","url":"docs/初中/圆/弧长和扇形面积/index.html"},{"revision":"3f109199d1bbee18f62261b4fa2f1b97","url":"docs/初中/圆/正多边形和圆/index.html"},{"revision":"3a9c936965d2642111a3edb575cfca01","url":"docs/初中/圆/点和圆、直线和圆的位置关系/index.html"},{"revision":"e96d554872143cf5d6c999958f4ac526","url":"docs/初中/投影与视图/三视图/index.html"},{"revision":"10ec492b09f9caf064e449e8dd7d09ac","url":"docs/初中/投影与视图/制作立体模型/index.html"},{"revision":"0ea745ffa911c51ca3ac66e5e47edec0","url":"docs/初中/投影与视图/投影/index.html"},{"revision":"e5b6a42c96b67230a75e5bcb10f372f9","url":"docs/初中/整式的乘法与因式分解/乘法公式/index.html"},{"revision":"12c2aba5e4e2339ae58c8c200815037b","url":"docs/初中/整式的乘法与因式分解/交叉（十字）相乘法/index.html"},{"revision":"f18b87d1c7fc6a09b872383a3c960383","url":"docs/初中/整式的乘法与因式分解/因式分解/index.html"},{"revision":"2e76adeaf49b7db6f40f6fa972969924","url":"docs/初中/整式的乘法与因式分解/整式的乘法/index.html"},{"revision":"eb7507ea6c328c2de36f709e5a4ff38d","url":"docs/初中/旋转/中心对称/index.html"},{"revision":"b14806dac34dbac31b02666e914237b1","url":"docs/初中/旋转/图形的旋转/index.html"},{"revision":"057acaa58bb4adc12d885fa01dc70c01","url":"docs/初中/旋转/图案设计/index.html"},{"revision":"724a9cd33a64ad0d41e5ad0f29a10f46","url":"docs/初中/概率初步/用列举法求概率/index.html"},{"revision":"c81c593fe23193bb580a30f714a42036","url":"docs/初中/概率初步/用频率估计概率/index.html"},{"revision":"a9dbc7fa2af31188d45fa7907a1bd2e2","url":"docs/初中/概率初步/随机事件与概率/index.html"},{"revision":"d6beb0a2774178806f3c337942feaa53","url":"docs/初中/相似/位似/index.html"},{"revision":"40cce4f4e8e283ded94272422ae93e8a","url":"docs/初中/相似/图形的相似/index.html"},{"revision":"5b4d2726d85b3bd4342c90a3868902b6","url":"docs/初中/相似/相似三角形/index.html"},{"revision":"588f5d2e55e570218d5f56acd6037feb","url":"docs/初中/锐角三角函数/解直角三角形及其应用/index.html"},{"revision":"6d9f80b2a22ae1845852b2d4605bec5a","url":"docs/初中/锐角三角函数/锐角三角函数/index.html"},{"revision":"f5c9fcef7ef42380f5bf3a3ea6e35ada","url":"docs/高中/三角函数/角的概念的推广及其度量/index.html"},{"revision":"925148796f38edb9e7945755a8127ed3","url":"docs/高中/不等式/不等式的基本性质/index.html"},{"revision":"ec6ff67b7a8a1ff055d0fb944326f32d","url":"docs/高中/不等式/不等式的应用/index.html"},{"revision":"9ba0a5e15e0ff6b1bfdf5fe3829c50ea","url":"docs/高中/不等式/不等式的解法/index.html"},{"revision":"3db98327d071e71d7c424511331bcc98","url":"docs/高中/函数/一次函数与二次函数/index.html"},{"revision":"ffd66af58a783baaad686952c886d0b5","url":"docs/高中/函数/函数/index.html"},{"revision":"f5e98369a7ea8499ce2b481b2dfbf458","url":"docs/高中/平面向量/向量的内积及其运算/index.html"},{"revision":"6043fa47f54c773059b63f1b234cd64b","url":"docs/高中/平面向量/向量的加减运算/index.html"},{"revision":"fa8ac18189de27031a0c0eef21fb6fe9","url":"docs/高中/平面向量/向量的坐标表示/index.html"},{"revision":"063cb510df82ce0348ec94fb83803f2f","url":"docs/高中/平面向量/数乘向量/index.html"},{"revision":"c81e17b204f4fdedcd83ecdb12eab2ff","url":"docs/高中/指数函数与对数函数/对数与对数函数/index.html"},{"revision":"6255753630ddac7d5e0b070ae87857ac","url":"docs/高中/指数函数与对数函数/指数与指数函数/index.html"},{"revision":"133d10af25aa7c7239162a3733c9cf74","url":"docs/高中/数列/数列的概念/index.html"},{"revision":"819e331ade6d12d3c768fd44918441df","url":"docs/高中/数列/等差数列/index.html"},{"revision":"d6b70b489aed57e5dc2a7296f5e2604d","url":"docs/高中/数列/等比数列/index.html"},{"revision":"76d278dac47839465c5e38a8a48b8972","url":"docs/高中/概率与统计初步/概率初步/index.html"},{"revision":"8a6015c2689cb4fc252b2dba3e87dbc4","url":"docs/高中/概率与统计初步/统计初步/index.html"},{"revision":"ca9a810cfc975ea33b2ac57fc2716fe8","url":"docs/高中/概率与统计初步/计数原理/index.html"},{"revision":"7e605a5fecbbb84bff506ee90c8601c1","url":"docs/高中/直线和圆的方程/圆的方程/index.html"},{"revision":"46633923e9e692c4c879d35eb7474ada","url":"docs/高中/直线和圆的方程/坐标系中的基本公式/index.html"},{"revision":"d951bebfa27bc5863a0a68cfcf45c60d","url":"docs/高中/直线和圆的方程/直线的方程/index.html"},{"revision":"61ff99e26ae7ee6608af1e76378adf9a","url":"docs/高中/立体几何/多面体与旋转体/index.html"},{"revision":"d70413140a2c1be8d93cee0e681633c3","url":"docs/高中/立体几何/空间中垂直关系和角/index.html"},{"revision":"afdc3cc75e729971e10c164927f62a44","url":"docs/高中/立体几何/空间中平面的基本性质/index.html"},{"revision":"9fbec952b35131fef3f879970bdaa754","url":"docs/高中/立体几何/空间中的平行关系/index.html"},{"revision":"eba13733479940bff3c51f4502b34a57","url":"docs/高中/集合/充要条件/index.html"},{"revision":"caa7c6594917cb84755d941100179562","url":"docs/高中/集合/集合及其运算/index.html"},{"revision":"c0504f90f5959e73b1062fd006f5b9ca","url":"index.html"},{"revision":"dc4ab606d5521a48e513600dd2a52077","url":"manifest.json"},{"revision":"579ea04ba5e80ecc12e1f392427eefbc","url":"assets/images/02-f93608ec44def749837e6c50bacce7f0.jpg"},{"revision":"192a6a160f31b1689a4c6233bdbbb803","url":"assets/images/docusaurus-plushie-banner-a60f7593abca1e3eef26a9afa244e4fb.jpeg"},{"revision":"86c87b66e2a9551f823f4984ec43d9c9","url":"assets/images/增函数与减函数-04a764f6346de9c7cd094abe374bfe85.jpg"},{"revision":"f8c7f130df6a7d392c8d68f9c7f13473","url":"assets/images/数轴-87591e8bef71bb00bd41c72302e28eaf.jpg"},{"revision":"13d5df082b78d786524510557c697373","url":"assets/images/数轴上的实数关系-9f5efc4e595109a1bb4f074accc43369.jpg"},{"revision":"0ba8a753a8bc8cc929ebdc0bc547c62d","url":"assets/images/维恩图-93f0fca79102b45d098826757f006111.jpg"},{"revision":"7fa1a026116afe175cae818030d4ffc4","url":"img/docusaurus.png"},{"revision":"4343e07bf942aefb5f334501958fbc0e","url":"img/favicon.ico"},{"revision":"aa4fa2cdc39d33f2ee3b8f245b6d30d9","url":"img/logo.svg"},{"revision":"b9d9189ed8f8dd58e70d9f8b3f693b3e","url":"img/tutorial/docsVersionDropdown.png"},{"revision":"c14bff79aafafca0957ccc34ee026e2c","url":"img/tutorial/localeDropdown.png"},{"revision":"a6b83d7b4c3cf36cb21eb7a9721716dd","url":"img/undraw_docusaurus_mountain.svg"},{"revision":"b64ae8e3c10e5ff2ec85a653cfe6edf8","url":"img/undraw_docusaurus_react.svg"},{"revision":"8fa6e79a15c385d7b2dc4bb761a2e9e3","url":"img/undraw_docusaurus_tree.svg"}];
+    const controller = new workbox_precaching__WEBPACK_IMPORTED_MODULE_0__.PrecacheController({
+        // Safer to turn this true?
+        fallbackToNetwork: true,
+    });
     if (params.offlineMode) {
-      const requestURL = event.request.url;
-      const possibleURLs = getPossibleURLs(requestURL);
-      for (let i = 0; i < possibleURLs.length; i += 1) {
-        const possibleURL = possibleURLs[i];
-        const cacheKey = controller.getCacheKeyForURL(possibleURL);
-        if (cacheKey) {
-          const cachedResponse = caches.match(cacheKey);
-          if (params.debug) {
-            console.log('[Docusaurus-PWA][SW]: serving cached asset', {
-              requestURL,
-              possibleURL,
-              possibleURLs,
-              cacheKey,
-              cachedResponse,
-            });
-          }
-          event.respondWith(cachedResponse);
-          break;
+        controller.addToCacheList(precacheManifest);
+        if (params.debug) {
+            console.log('[Docusaurus-PWA][SW]: addToCacheList', { precacheManifest });
         }
-      }
     }
-  });
-
-  self.addEventListener('message', async (event) => {
-    if (params.debug) {
-      console.log('[Docusaurus-PWA][SW]: message event', {
-        event,
-      });
-    }
-
-    const type = event.data?.type;
-
-    if (type === 'SKIP_WAITING') {
-      self.skipWaiting();
-    }
-  });
+    await runSWCustomCode(params);
+    self.addEventListener('install', (event) => {
+        if (params.debug) {
+            console.log('[Docusaurus-PWA][SW]: install event', { event });
+        }
+        event.waitUntil(controller.install(event));
+    });
+    self.addEventListener('activate', (event) => {
+        if (params.debug) {
+            console.log('[Docusaurus-PWA][SW]: activate event', { event });
+        }
+        event.waitUntil(controller.activate(event));
+    });
+    self.addEventListener('fetch', async (event) => {
+        if (params.offlineMode) {
+            const requestURL = event.request.url;
+            const possibleURLs = getPossibleURLs(requestURL);
+            for (const possibleURL of possibleURLs) {
+                const cacheKey = controller.getCacheKeyForURL(possibleURL);
+                if (cacheKey) {
+                    const cachedResponse = caches.match(cacheKey);
+                    if (params.debug) {
+                        console.log('[Docusaurus-PWA][SW]: serving cached asset', {
+                            requestURL,
+                            possibleURL,
+                            possibleURLs,
+                            cacheKey,
+                            cachedResponse,
+                        });
+                    }
+                    event.respondWith(cachedResponse);
+                    break;
+                }
+            }
+        }
+    });
+    self.addEventListener('message', async (event) => {
+        if (params.debug) {
+            console.log('[Docusaurus-PWA][SW]: message event', { event });
+        }
+        const type = event.data?.type;
+        if (type === 'SKIP_WAITING') {
+            // lib def bug, see https://github.com/microsoft/TypeScript/issues/14877
+            self.skipWaiting();
+        }
+    });
 })();
 
 })();
