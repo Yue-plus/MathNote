@@ -28,7 +28,7 @@ const config = {
           sidebarPath: require.resolve('./sidebars.js'),
           editUrl: 'https://github.com/Yue-plus/MathNote',
           remarkPlugins: [math],
-          rehypePlugins: [katex],
+          rehypePlugins: [katex, { strict: false }],
         },
         blog: {showReadingTime: true, editUrl: 'https://github.com/Yue-plus/MathNote'},
         theme: {
@@ -93,15 +93,7 @@ const config = {
               {type: 'doc', label: '10. 概率与统计初步', docId: '高中/概率与统计初步/计数原理'},
             ]
           },
-          {
-            type: 'dropdown',
-            label: '高等数学',
-            position: 'left',
-            items: [
-              { type: 'doc', label: '1. 函数及其模型', docId: '高等数学/函数及其模型/集合与函数' },
-              { type: 'doc', label: '2. 极限及其应用', docId: '高等数学/极限及其应用/极限的概念' },
-            ]
-          },
+          { type: 'doc', label: '高等数学', docId: '高等数学/导数与微分/函数的求导法则' },
           // {to: '/blog', label: 'Blog', position: 'left'},
           {href: 'https://note.yueplus.ink/', label: 'NetNote', position: 'right'},
           {href: 'https://www.geogebra.org/', label: 'GeoGebra - 数学教学软件', position: 'right'},
